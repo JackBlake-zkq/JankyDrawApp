@@ -71,7 +71,8 @@
             
             
             let mouseDown = false;
-            drawArea.onmousedown = drawArea.onmouseup = () => mouseDown = !mouseDown;
+            window.onmousedown = () => mouseDown = true;
+            window.onmouseup = () => mouseDown = false;
 
 
             drawArea.onmousemove = (e) => {
