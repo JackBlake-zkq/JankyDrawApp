@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Draw</title>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            html{
+                font-size:1rem;
+            }
+            body{
+                margin:0;
+            }
+            .brush{
+                border-radius: 100%;
+                position:absolute;
+            }
+            div:first-of-type div:first-child{
+                left:-5px;
+                top: -5px;
+                width:10px;
+                height:10px;
+            }
+            header{
+                background:grey;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <div class='brush'></div>
+        </div>
+        <header>
+            <input type="range" min="1" max="100" value="20" class="slider" id="slider">
+            <input type='color' id='colorSelect' value='black'>
+        </header>
+        <div id='drawArea'></div>
+        <script>
+            "use strict"
+            let wrap = document.body.firstElementChild
+            const header = document.querySelector('header');
+            const slider = document.getElementById('slider');
+            const drawArea = document.getElementById('drawArea');
+            const sizeDrawArea = () => drawArea.style.height = `${window.innerHeight - header.scrollHeight}px`;
+            const colorSelect = document.getElementById('colorSelect')
+            let currColor = colorSelect.value;
+            let currBrush = wrap.firstElementChild;
+
+            window.onload = window.onresize = sizeDrawArea;
+
+            let styles = {
+                boxShadow: ''
+            };
+
+            const newBrush = () => {
+                currBrush = document.createElement('div');
+                currBrush.className = 'brush';
+                wrap.appendChild(currBrush);
+                currBrush.style.height = currBrush.style.width = `${slider.value}px`;
+                currBrush.style.left = currBrush.style.top = `${-slider.value / 2}px`;
+                styles = {
+                    boxShadow: ''
+                };
+            }
+            slider.onchange = newBrush;
+            colorSelect.onchange = () => {
+                currColor = colorSelect.value;
+                newBrush();
+            }
+            
+            
+            let mouseDown = false;
+            drawArea.onmousedown = drawArea.onmouseup = () => mouseDown = !mouseDown;
+
+
+            drawArea.onmousemove = (e) => {
+                if(mouseDown){
+                    if(styles.boxShadow) styles.boxShadow += ',';
+                    styles.boxShadow += `${e.clientX}px ${e.clientY}px ${currColor}`;
+                    Object.assign(currBrush.style, styles);
+                }
+            }
+        </script>
+    </body>
+</html>
